@@ -16,6 +16,9 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     Button scan;
@@ -47,12 +50,24 @@ public class MainActivity extends AppCompatActivity {
                 if (result.getContents() == null) {
                     Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
                 } else {
-                    Log.d("MainActivity", "Scanned");
+                    Log.d("MainActivity", result.getContents());
                     Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_SHORT).show();
+                    printJson(result.getContents());
                 }
             } else {
                 super.onActivityResult(requestCode, resultCode, data);
             }
+        }
+    }
+
+    private void printJson(String contents) {
+        try {
+            JSONObject result = new JSONObject(contents);
+            String ID = (String) result.get("ID");
+            String clue = result.getString("clue");
+            Log.e("CLUE",ID+":"+clue);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }
